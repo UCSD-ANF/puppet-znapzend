@@ -1,0 +1,59 @@
+#!/bin/sh
+#
+# Startup script for znapzend
+#
+#
+# PROVIDE: znapzend
+# REQUIRE: LOGIN
+# KEYWORD: shutdown
+
+
+. /etc/rc.subr
+
+name=<%= @service_name %>
+rcvar=znapzend_enable
+desc="ZnapZend - ZFS backup tool"
+pidfile=<%= @service_pid_file %>
+logfile=<%= @service_log_file %>
+
+: ${znapzend_enable:=YES}
+
+command="<%= @service_start_cmd %>"
+start_cmd="znapzend_start"
+stop_cmd="znapzend_stop"
+reload_cmd="znapzend_reload"
+status_cmd="znapzend_status"
+
+znapzend_start(){
+    echo "Starting ${name}..."
+    su -m znapzend -c "${command} <%= @service_start_options %>"
+}
+
+znapzend_stop(){
+    echo "Stopping ${name}..."
+    pkill -F ${pidfile}
+    sleep 2
+}
+
+znapzend_reload(){
+   if ps -p $(cat ${pidfile}) > /dev/null 2>&1; then
+     echo "Reloading ${name} config..."
+     pkill -HUP -F ${pidfile}
+   else
+     echo "${name} is not running"
+     znapzend_start
+   fi
+}
+
+znapzend_status(){
+   if ps -p $(cat ${pidfile}) > /dev/null 2>&1; then
+     echo "${name} is running with PID: $(cat ${pidfile})"
+   else
+     echo "${name} is not running"
+     exit 1
+   fi
+}
+
+extra_commands="reload"
+load_rc_config $name
+run_rc_command "$1"
