@@ -12,18 +12,24 @@ class znapzend::install {
   case $::osfamily {
     'FreeBSD': {
         file { "/usr/local/etc/rc.d/$::znapzend::service_name":
-          owner  => 'root',
-          group  => 'wheel',
-          mode   => '0755',
+          owner    => 'root',
+          group    => 'wheel',
+          mode     => '0755',
           content  => template('znapzend/znapzend_init_freebsd.erb'),
         }
     }
     'RedHat': {
+
+        exec { 'reload-sysctl-daemon':
+          command     => "/bin/systemctl daemon-reload",
+          refreshonly => true,
+        }
         file { '/lib/systemd/system/znapzend.service':
-          owner  => 'root',
-          group  => 'root',
-          mode   => '0755',
-          content  => template('znapzend/znapzend_init_centos.erb'),
+          owner     => 'root',
+          group     => 'root',
+          mode      => '0755',
+          content   => template('znapzend/znapzend_init_centos.erb'),
+          notify    => Exec['reload-sysctl-daemon'],
         }
         file { '/etc/sudoers.d/zfs':
           owner  => 'root',
@@ -35,7 +41,7 @@ class znapzend::install {
   }
 
   # add znapzend user
-  user { 'znapzend':
+  user { $::znapzend::user:
     ensure   => 'present',
     uid      => '79',
     comment  => 'znapzend backup user',
@@ -43,19 +49,27 @@ class znapzend::install {
     home     => '/home/znapzend',
   } ->
   # pid dir
-  file { '/var/run/znapzend':
+  file { $::znapzend::service_pid_dir:
     ensure   => 'directory',
-    owner    => 'znapzend',
-    group    => 'znapzend',
+    owner    => $::znapzend::user,
+    group    => $::znapzend::group,
     mode     => '0755',
   } ->
   # log dir
-  file { '/var/log/znapzend':
+  file { $::znapzend::service_log_dir:
     ensure   => 'directory',
-    owner    => 'znapzend',
-    group    => 'znapzend',
+    owner    => $::znapzend::user,
+    group    => $::znapzend::group,
     mode     => '0755',
-  }
+  } ->
+  # config dir
+  file { $::znapzend::service_conf_dir:
+    ensure   => 'directory',
+    owner    => $::znapzend::user,
+    group    => $::znapzend::group,
+    mode     => '0755',
+  } 
+  
 
 
 }

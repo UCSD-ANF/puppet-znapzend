@@ -18,7 +18,7 @@ logfile=<%= @service_log_file %>
 
 : ${znapzend_enable:=YES}
 
-command="<%= @service_start_cmd %>"
+command="<%= @basedir %>/<%= @service_name %>"
 start_cmd="znapzend_start"
 stop_cmd="znapzend_stop"
 reload_cmd="znapzend_reload"
@@ -26,7 +26,7 @@ status_cmd="znapzend_status"
 
 znapzend_start(){
     echo "Starting ${name}..."
-    su -m znapzend -c "${command} <%= @service_start_options %>"
+    su -m <%= @user %> -c "${command} <%= @service_start_options %> --pidfile=$pidfile --logto=$logfile"
 }
 
 znapzend_stop(){
