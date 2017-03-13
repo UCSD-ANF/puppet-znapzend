@@ -1,5 +1,56 @@
 # == Class: znapzend::plans
 #
+# Apply znapzend backup plans
+#
+# Plans are setup using the 'znapzendzetup' command which 
+# 'imports' the config from $service_conf_dir.  
+#
+# ===Parameters
+#
+# [*config_file*]
+#   The name of the configuration file used for the znapzendzetup import.  
+#
+# [*config_src*]
+#   ZFS source filesystem for backup plan.
+#
+# [*config_dst_a*]
+#   Backup destination "a".      
+# 
+# [*config_dst_a_plan*]
+#   The plan specifies how often and how long to keep backups. It should follow
+#   the format of:
+#       retA=>intA,retB=>intB,...
+#   Example ->
+#       1week=>30min  # will keep one copy every 30 minutes for 1 week
+#
+# [*config_dst_b*]
+#   Backup destination "b".
+# 
+# [*config_dst_b_plan*]
+#   Backup plan for destination "b", see above for examples (same as dst_a)
+#
+# [*config_enabled*]
+#   Defaults to 'on'.  You may disable the backup plan with 'off'.
+# 
+# [*config_mbuffer*]
+#   Enable or disable the user of mbuffer for remote backups. Default is 'off'.
+#
+# [*config_mbuffer_size*]
+#   Specify the mbuffer size. Default is 1G. Supports the following units:
+#       b, k, M, G
+#
+# [*config_post_znap_cmd*]
+#   Run command after snapshot is taken.  Default is 'off'.
+#
+# [*config_pre_znap_cmd*]
+#   Run command before snapshot is taken.  Default is 'off'.
+#
+# [*config_recursive*]
+#   Create snapshots of child ZFS file systes as well.  Default is 'on'.
+#
+# [*config_zend_delay*]
+#   Specify delay in seconds before sending snapshots to destination.
+#
 class znapzend::plans {
 
    define generate_config (
