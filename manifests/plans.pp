@@ -74,14 +74,14 @@ class znapzend::plans {
     
        # create config file to be read by znapzendzetup
        file { "$znapzend::service_conf_dir/$config_file":
-         owner     => 'znapzend',
-         group     => 'znapzend',
+         owner     => $::znapzend::user,
+         group     => $::znapzend::group,
          content  => template('znapzend/znapzend.conf.erb'),
          notify   => Exec["load_${config_file}"],
        }
        # reload the config with znapzend and reload the znapzend daemon
        exec { "load_${config_file}":
-         command  => "/usr/local/bin/znapzendzetup import --write $config_src < $znapzend::service_conf_dir/$config_file; $znapzend::service_reload_cmd",
+         command  => "$::znapzend::basedir/znapzendzetup import --write $config_src < $::znapzend::service_conf_dir/$config_file; $::znapzend::service_reload_cmd",
          refreshonly => true,
        }
    }

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE service_bundle SYSTEM "/usr/share/lib/xml/dtd/service_bundle.dtd.1">
+<service_bundle type='manifest' name='znapzend'>
+
+<service
+        name='system/filesystem/<%= @service_name %>'
+        type='service'
+        version='0.13.0'>
+        <create_default_instance enabled='true' />
+        <single_instance />
+
+        <!-- we need to be multi-user  -->
+        <dependency
+                name='multi-user'
+                grouping='require_all'
+                restart_on='none'
+                type='service'>
+                <service_fmri value='svc:/milestone/multi-user' />
+        </dependency>
+
+        <exec_method
+                type='method'
+                name='start'
+                exec='/lib/svc/method/<%= @service_name %> start'
+                timeout_seconds='0'>
+        </exec_method>
+
+        <exec_method
+                type='method'
+                name='restart'
+                exec='/lib/svc/method/<%= @service_name %> restart'
+                timeout_seconds='0'>
+        </exec_method>
+
+        <exec_method
+                type='method'
+                name='refresh'
+                exec='/lib/svc/method/<%= @service_name %> reload'
+                timeout_seconds='0'>
+        </exec_method>
+
+        <exec_method
+                type='method'
+                name='stop'
+                exec='/lib/svc/method/<%= @service_name %> stop'
+                timeout_seconds='0' >
+        </exec_method>
+
+        <property_group name='startd' type='framework'>
+                <propval name='duration' type='astring' value='transient' />
+        </property_group>
+
+        <property_group name='general' type='framework'>
+            <propval name='action_authorization' type='astring'
+                value='solaris.smf.manage.znapzend' />
+            <propval name='value_authorization' type='astring'
+                value='solaris.smf.manage.znapzend' />
+        </property_group>
+
+        <property_group name='znapzend' type='application'>
+            <propval name='log' type='astring' value='<%= @service_pid_file %>' />
+        </property_group>
+</service>
+</service_bundle>

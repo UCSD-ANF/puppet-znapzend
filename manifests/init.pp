@@ -78,7 +78,7 @@ class znapzend (
   $user_shell		  = $znapzend::params::user_shell,
   $group                  = 'znapzend',
   $package_ensure         = 'present',
-  $package_manage         = true,
+  $package_manage         = $znapzend::params::package_manage,
   $package_name           = 'znapzend',
   $service_enable         = true,
   $service_ensure         = 'running',
@@ -95,7 +95,7 @@ class znapzend (
 ) inherits znapzend::params {
 
   # validate OS
-  validate_re($::osfamily, '^(RedHat|FreeBSD)$', "OS Family ${::osfamily} unsupported")
+  validate_re($::osfamily, '^(RedHat|FreeBSD|Solaris)$', "OS Family ${::osfamily} unsupported")
   validate_re($package_ensure, '^(absent|latest|present)$')
   validate_bool($package_manage)
   validate_string($package_name)
