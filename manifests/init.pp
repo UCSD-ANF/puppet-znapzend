@@ -74,9 +74,14 @@
 #
 class znapzend (
   $basedir		  = '/usr/local/bin',
-  $user                   = 'znapzend',
+  $manage_user            = true,
+  $manage_sudo            = true,
+  $user                   = $znapzend::params::user,
+  $user_home              = $znapzend::params::user_home,
   $user_shell		  = $znapzend::params::user_shell,
+  $user_uid               = '79',
   $group                  = 'znapzend',
+  $sudo_d_path            = $znapzend::params::sudo_d_path,
   $package_ensure         = 'present',
   $package_manage         = $znapzend::params::package_manage,
   $package_name           = 'znapzend',

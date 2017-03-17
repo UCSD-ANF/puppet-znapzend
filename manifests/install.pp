@@ -8,7 +8,7 @@ class znapzend::install {
     }
   }
 
-  # init and sudo script(s)
+  # init script(s)
   case $::osfamily {
     'FreeBSD': {
         file { "/usr/local/etc/rc.d/$::znapzend::service_name":
@@ -30,12 +30,6 @@ class znapzend::install {
           mode      => '0755',
           content   => template('znapzend/znapzend_init_centos.erb'),
           notify    => Exec['reload-sysctl-daemon'],
-        }
-        file { '/etc/sudoers.d/zfs':
-          owner  => 'root',
-          group  => 'root',
-          mode   => '0755',
-          source => 'puppet:///modules/znapzend/zfs_sudo',
         }
     }
     'Solaris': {
@@ -59,15 +53,26 @@ class znapzend::install {
     }
   }
 
+  # manage sudo
+  if $::znapzend::manage_sudo {
+    file { "$::znapzend::sudo_d_path/znapzend":
+          owner  => 'root',
+          mode   => '0755',
+          content => template('znapzend/znapzend_sudo.erb'),
+        }
+  }
+
   # add non-root user if specified 
   if $::znapzend::user != 'root' {
-    user { $::znapzend::user:
-      ensure   => 'present',
-      uid      => '79',
-      comment  => 'znapzend backup user',
-      shell    => $::znapzend::user_shell,
-      home     => '/home/znapzend',
-    } 
+    if $::znapzend::manage_user {
+      user { $::znapzend::user:
+        ensure   => 'present',
+        uid      => $::znapzend::user_uid,
+        comment  => 'znapzend backup user',
+        shell    => $::znapzend::user_shell,
+        home     => $::znapzend::user_home,
+      } 
+    }
   } 
   # pid dir
   file { $::znapzend::service_pid_dir:
@@ -75,6 +80,7 @@ class znapzend::install {
     owner    => $::znapzend::user,
     group    => $::znapzend::group,
     mode     => '0755',
+    recurse  => true,
   } ->
   # log dir
   file { $::znapzend::service_log_dir:
@@ -82,6 +88,7 @@ class znapzend::install {
     owner    => $::znapzend::user,
     group    => $::znapzend::group,
     mode     => '0755',
+    recurse  => true,
   } ->
   # config dir
   file { $::znapzend::service_conf_dir:
@@ -89,6 +96,7 @@ class znapzend::install {
     owner    => $::znapzend::user,
     group    => $::znapzend::group,
     mode     => '0755',
+    recurse  => true,
   } 
   
 

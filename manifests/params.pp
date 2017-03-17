@@ -2,6 +2,8 @@
 #
 class znapzend::params {
 
+  $user			  = "znapzend"
+  $user_home              = "/home/$user"
   $service_name           = 'znapzend'
   $service_conf_dir       = "/usr/local/etc/$service_name"
   $service_log_dir        = "/var/log/$service_name"
@@ -11,9 +13,9 @@ class znapzend::params {
   $service_start_options  = "--daemonize --features=sudo"
 
   $service_reload_cmd = $::osfamily ? {
-    'RedHat'  => "systemctl reload $servicename",
-    'Solaris'  => "svcadm refresh znapzend",
-    default   => "service $servicename reload",
+    'RedHat'  => "systemctl reload $service_name",
+    'Solaris'  => "svcadm refresh $service_name",
+    default   => "service $service_name reload",
   }
   
   $user_shell = $::osfamily ? {
@@ -26,4 +28,9 @@ class znapzend::params {
     default    => true,
   }
 
+  $sudo_d_path = $::osfamily ? {
+    'FreeBSD'  => '/usr/local/etc/sudoers.d',
+    default   => '/etc/sudoers.d'
+  }
+    
 }
