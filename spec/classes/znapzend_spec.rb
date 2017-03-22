@@ -25,13 +25,21 @@ describe 'znapzend', :type => :class do
     it { should contain_class('znapzend::plans') }
 
     describe 'znapzend::install' do
-      let(:params) {{
-        :package_ensure => 'present',
-        :package_name   => 'znapzend',
-        :package_manage => true,
-      }}
-      it { should contain_package('znapzend').with_ensure('present') }
-
+      if system == "Solaris"
+        let(:params) {{
+          :package_manage => false,
+          :package_name   => 'znapzend',
+        }}
+        it { should_not contain_package('znapzend') }
+      else
+        let(:params) {{
+          :package_ensure => 'present',
+          :package_name   => 'znapzend',
+          :package_manage => true,
+        }}
+        it { should contain_package('znapzend').with_ensure('present') }
+      end
+ 
       describe 'should allow package ensure to be overridden' do
         let(:params) {{
           :package_ensure => 'latest',

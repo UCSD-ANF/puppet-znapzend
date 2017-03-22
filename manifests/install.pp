@@ -62,12 +62,17 @@ class znapzend::install {
         }
   }
 
-  # add non-root user if specified 
+  # add non-root user/group if specified 
   if $::znapzend::user != 'root' {
     if $::znapzend::manage_user {
+      group { $::znapzend::group:
+        ensure   => 'present',
+        gid      => $::znapzend::user_gid,
+      } ->
       user { $::znapzend::user:
         ensure   => 'present',
         uid      => $::znapzend::user_uid,
+        gid      => $::znapzend::user_gid,
         comment  => 'znapzend backup user',
         shell    => $::znapzend::user_shell,
         home     => $::znapzend::user_home,
@@ -79,7 +84,7 @@ class znapzend::install {
     ensure   => 'directory',
     owner    => $::znapzend::user,
     group    => $::znapzend::group,
-    mode     => '0755',
+    mode     => '0644',
     recurse  => true,
   } ->
   # log dir

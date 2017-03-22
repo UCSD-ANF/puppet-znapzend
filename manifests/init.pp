@@ -9,16 +9,34 @@
 #   The base directory where ZnapZend is installed.  Defaults to /usr/local
 #   by the package
 #
+# [*manage_user*]
+#   Defaults to true.  Defines whether a user should be created
+#
+# [*manage_sudo*]
+#   Defaults to true.  Defines whether to add sudo entries for zfs
+#
 # [*user*]
 #   The user account the znapzend daemon should run under.  Defaults to 
 #   'znapzend'
 #
+# [*user_home*]
+#    User home directory
+#
 # [*user_shell*]
 #   The shell defined for $user.  Defaults to 'bash'
+#
+# [*user_uid*]
+#   uid for user.  Defaults to 179
+#
+# [*user_gid*]
+#   gid for group.  Defaults to 179
 #
 # [*group*]
 #   The group assigned to relevenat files and direcories.  Defaults to 
 #   'znapzend'
+#
+# [*sudo_d_path*]
+#   Defines path to sudoers.d directory
 #
 # [*package_ensure*] 
 #   Defaults to 'present'. Can be set to a specific version of znapzend,
@@ -69,25 +87,26 @@
 #   Defines whether the service supports the 'status' command.  Default is true.
 #
 # [*plans*]
-#   This is a has array of snapshot plan schedule.  Usually defined in hieradata
+#   This is a hash array of snapshot plan schedule.  Usually defined in hieradata
 #   More details can be found in the znapzend::plans class
 #
 class znapzend (
-  $basedir		  = '/usr/local/bin',
-  $manage_user            = true,
-  $manage_sudo            = true,
+  $basedir		  = $znapzend::params::basedir,
+  $manage_user            = $znapzend::params::manage_user,
+  $manage_sudo            = $znapzend::params::manage_sudo,
   $user                   = $znapzend::params::user,
   $user_home              = $znapzend::params::user_home,
   $user_shell		  = $znapzend::params::user_shell,
-  $user_uid               = '79',
-  $group                  = 'znapzend',
+  $user_uid               = $znapzend::params::user_uid,
+  $user_gid               = $znapzend::params::user_gid,
+  $group                  = $znapzend::params::group,
   $sudo_d_path            = $znapzend::params::sudo_d_path,
-  $package_ensure         = 'present',
+  $package_ensure         = $znapzend::params::package_ensure,
   $package_manage         = $znapzend::params::package_manage,
-  $package_name           = 'znapzend',
-  $service_enable         = true,
-  $service_ensure         = 'running',
-  $service_name           = 'znapzend',
+  $package_name           = $znapzend::params::package_name,
+  $service_enable         = $znapzend::params::service_enable,
+  $service_ensure         = $znapzend::params::service_ensure,
+  $service_name           = $znapzend::params::service_name,
   $service_conf_dir	  = $znapzend::params::service_conf_dir,
   $service_log_dir        = $znapzend::params::service_log_dir,
   $service_log_file       = $znapzend::params::service_log_file,
@@ -95,16 +114,20 @@ class znapzend (
   $service_pid_file       = $znapzend::params::service_pid_file,
   $service_reload_cmd     = $znapzend::params::service_reload_cmd,
   $service_start_options  = $znapzend::params::service_start_options,
-  $service_hasstatus      = true,
+  $service_hasstatus      = $znapzend::params::service_hasstatus,
   $plans		  = {},
 ) inherits znapzend::params {
 
-  # validate OS
   validate_re($::osfamily, '^(RedHat|FreeBSD|Solaris)$', "OS Family ${::osfamily} unsupported")
+  validate_bool($manage_user)
+  validate_bool($manage_sudo)
   validate_re($package_ensure, '^(absent|latest|present)$')
   validate_bool($package_manage)
   validate_string($package_name)
   validate_bool($service_enable)
+  validate_bool($service_hasstatus)
+  validate_hash($plans)
+
 
   anchor {'::znapzend::begin': } ->
   class {'::znapzend::install': } ->

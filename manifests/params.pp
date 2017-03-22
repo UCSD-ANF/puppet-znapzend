@@ -2,8 +2,18 @@
 #
 class znapzend::params {
 
-  $user			  = "znapzend"
+  $basedir                = '/usr/local/bin'
+  $manage_user            = true
+  $manage_sudo            = true
+  $user			  = 'znapzend'
   $user_home              = "/home/$user"
+  $user_uid               = '179'
+  $user_gid               = '179'
+  $group                  = 'znapzend'
+  $package_ensure         = 'present'
+  $package_name           = 'znapzend'
+  $service_enable         = true
+  $service_ensure         = 'running'
   $service_name           = 'znapzend'
   $service_conf_dir       = "/usr/local/etc/$service_name"
   $service_log_dir        = "/var/log/$service_name"
@@ -11,6 +21,7 @@ class znapzend::params {
   $service_pid_dir        = "/var/run/$service_name"
   $service_pid_file       = "$service_pid_dir/$service_name.pid"
   $service_start_options  = "--daemonize --features=sudo"
+  $service_hasstatus      = true
 
   $service_reload_cmd = $::osfamily ? {
     'RedHat'  => "systemctl reload $service_name",
@@ -30,6 +41,7 @@ class znapzend::params {
 
   $sudo_d_path = $::osfamily ? {
     'FreeBSD'  => '/usr/local/etc/sudoers.d',
+    'Solaris'  => '/etc/opt/csw/sudoers.d',
     default   => '/etc/sudoers.d'
   }
     
