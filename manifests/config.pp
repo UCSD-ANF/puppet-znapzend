@@ -33,7 +33,7 @@
 #   Defaults to 'on'.  You may disable the backup plan with 'off'.
 # 
 # [*config_mbuffer*]
-#   Enable or disable the user of mbuffer for remote backups. Default is 'off'.
+#   Path to mbuffer binary.  A value of 'off' will dsiable mbuffer (default)
 #
 # [*config_mbuffer_size*]
 #   Specify the mbuffer size. Default is 1G. Supports the following units:
@@ -46,7 +46,7 @@
 #   Run command before snapshot is taken.  Default is 'off'.
 #
 # [*config_recursive*]
-#   Create snapshots of child ZFS file systes as well.  Default is 'on'.
+#   Create snapshots of child ZFS file systems as well.  Default is 'on'.
 #
 # [*config_zend_delay*]
 #   Specify delay in seconds before sending snapshots to destination.
