@@ -42,9 +42,9 @@ describe 'znapzend', :type => :class do
         context 'should allow package ensure to be overridden' do
           let(:params) {{
             :package_ensure => 'latest',
-            :package_name   => 'znapzend',
+            :package_name   => 'znoobar',
           }}
-          it { should contain_package('znapzend').with_ensure('latest') }
+          it { should contain_package('znoobar').with_ensure('latest') }
         end
 
         context 'should allow the package name to be overridden' do
@@ -89,6 +89,81 @@ describe 'znapzend', :type => :class do
           end
         end
    
+      end
+   
+      describe 'manage sudo' do
+        context 'should create znapzend sudo file' do
+           let(:params) {{
+             :sudo_d_path   => '/usr/local/etc/sudoers.d',
+             :manage_sudo   => true,
+           }}
+           it { should contain_file('/usr/local/etc/sudoers.d/znapzend') }
+        end  
+
+        context 'should all for sudo to be unmanaged' do
+           let(:params) {{
+             :sudo_d_path   => '/usr/local/etc/sudoers.d',
+             :manage_sudo   => false,
+           }}
+           it { should_not contain_file('/usr/local/etc/sudoers.d/znapzend') }
+        end  
+      end
+
+      describe 'should create user and group' do
+         let(:params) {{
+           :manage_user      => true,
+           :user             => 'znapzend',
+           :group            => 'znapzend',
+           :user_uid         => '123',
+           :user_gid         => '123',
+           :user_shell       => '/bin/bash',
+           :user_home        => '/home/znapzend', 
+           :service_pid_dir  => '/var/run/znapzend',
+           :service_log_dir  => '/var/log/znapzend',
+           :service_conf_dir => '/usr/local/etc/znapzend',
+         }}
+
+         it { should contain_group('znapzend').with({
+           'ensure'  => 'present',
+           'gid'     => '123',
+         })}
+         it { should contain_user('znapzend').with({
+           'ensure'  => 'present',
+           'uid'      => '123',
+           'gid'      => '123',
+           'shell'    => '/bin/bash',
+           'home'     => '/home/znapzend', 
+         })}
+
+         context 'should create pid dir' do
+           it { should contain_file('/var/run/znapzend').with({
+             'ensure' 	 => 'directory',
+             'owner'     => 'znapzend',
+             'group'     => 'znapzend',
+             'mode'      => '0644',
+             'recurse'   => true,
+           })}
+         end
+
+         context 'should create log dir' do
+           it { should contain_file('/var/log/znapzend').with({
+             'ensure' 	 => 'directory',
+             'owner'     => 'znapzend',
+             'group'     => 'znapzend',
+             'mode'      => '0755',
+             'recurse'   => true,
+           })}
+         end
+
+         context 'should create config dir' do
+           it { should contain_file('/usr/local/etc/znapzend').with({
+             'ensure' 	 => 'directory',
+             'owner'     => 'znapzend',
+             'group'     => 'znapzend',
+             'mode'      => '0755',
+             'recurse'   => true,
+           })}
+         end
       end
 
     end # describe znapzend::install
