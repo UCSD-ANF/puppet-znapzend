@@ -78,10 +78,9 @@
 # [*service_reload_cmd*]
 #   This command reloads the znapzend configuration.
 #
-# [*service_start_options*]
-#   Additional argments that may send to the 'znapzend' command.  Refer to znapzend 
-#   docs for additional options.  "daemonize, pidfile & logto" are required
-#   and need not be specified here
+# [*service_features*]
+#   Comma separated list of "features" that may be passed to the 'znapzend' command. 
+#   Valid features are: oracleMode,recvu,pfexec and sudo (default)
 #
 # [*service_hasstatus*]
 #   Defines whether the service supports the 'status' command.  Default is true.
@@ -113,7 +112,7 @@ class znapzend (
   $service_pid_dir        = $znapzend::params::service_pid_dir,
   $service_pid_file       = $znapzend::params::service_pid_file,
   $service_reload_cmd     = $znapzend::params::service_reload_cmd,
-  $service_start_options  = $znapzend::params::service_start_options,
+  $service_features       = $znapzend::params::service_features,
   $service_hasstatus      = $znapzend::params::service_hasstatus,
   $plans		  = {},
 ) inherits znapzend::params {

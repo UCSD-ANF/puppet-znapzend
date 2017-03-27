@@ -20,7 +20,7 @@ class znapzend::params {
   $service_log_file       = "$service_log_dir/$service_name.log"
   $service_pid_dir        = "/var/run/$service_name"
   $service_pid_file       = "$service_pid_dir/$service_name.pid"
-  $service_start_options  = "--daemonize --features=sudo"
+  $service_features       = "sudo"
   $service_hasstatus      = true
 
   $service_reload_cmd = $::osfamily ? {
