@@ -16,20 +16,17 @@ class znapzend::install {
           group    => 'wheel',
           mode     => '0755',
           content  => template('znapzend/znapzend_init_freebsd.erb'),
+          notify   => Service[$znapzend::service_name],
         }
     }
     'RedHat': {
 
-        exec { 'reload-sysctl-daemon':
-          command     => "/bin/systemctl daemon-reload",
-          refreshonly => true,
-        }
         file { '/lib/systemd/system/znapzend.service':
           owner     => 'root',
           group     => 'root',
           mode      => '0755',
           content   => template('znapzend/znapzend_init_centos.erb'),
-          notify    => Exec['reload-sysctl-daemon'],
+          notify   => Service[$znapzend::service_name],
         }
     }
     'Solaris': {
@@ -38,6 +35,7 @@ class znapzend::install {
           group    => 'bin',
           mode     => '0555',
           content  => template('znapzend/znapzend_init_solaris.erb'),
+          notify   => Service[$znapzend::service_name],
         }
         file { "/var/svc/manifest/system/filesystem/${::znapzend::service_name}.xml":
           owner    => 'root',
