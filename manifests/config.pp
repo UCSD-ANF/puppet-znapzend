@@ -76,6 +76,7 @@ define znapzend::config (
       group     => $::znapzend::group,
       content  => template('znapzend/znapzend.conf.erb'),
       notify   => Exec["load_${config_file}"],
+      require  => User[$::znapzend::user],
     }
     # reload the config with znapzend and reload the znapzend daemon
     exec { "load_${config_file}":
