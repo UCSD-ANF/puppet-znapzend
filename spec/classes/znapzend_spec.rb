@@ -114,8 +114,6 @@ describe 'znapzend', :type => :class do
            :manage_user      => true,
            :user             => 'znapzend',
            :group            => 'znapzend',
-           :user_uid         => '123',
-           :user_gid         => '123',
            :user_shell       => '/bin/bash',
            :user_home        => '/home/znapzend', 
            :service_pid_dir  => '/var/run/znapzend',
@@ -125,12 +123,9 @@ describe 'znapzend', :type => :class do
 
          it { should contain_group('znapzend').with({
            'ensure'  => 'present',
-           'gid'     => '123',
          })}
          it { should contain_user('znapzend').with({
            'ensure'  => 'present',
-           'uid'      => '123',
-           'gid'      => '123',
            'shell'    => '/bin/bash',
            'home'     => '/home/znapzend', 
          })}

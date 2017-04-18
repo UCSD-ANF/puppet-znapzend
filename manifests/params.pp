@@ -7,8 +7,6 @@ class znapzend::params {
   $manage_sudo            = true
   $user			  = 'znapzend'
   $user_home              = "/home/$user"
-  $user_uid               = '179'
-  $user_gid               = '179'
   $group                  = 'znapzend'
   $package_ensure         = 'present'
   $package_name           = 'znapzend'

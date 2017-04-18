@@ -65,12 +65,9 @@ class znapzend::install {
     if $::znapzend::manage_user {
       group { $::znapzend::group:
         ensure   => 'present',
-        gid      => $::znapzend::user_gid,
       } ->
       user { $::znapzend::user:
         ensure   => 'present',
-        uid      => $::znapzend::user_uid,
-        gid      => $::znapzend::user_gid,
         comment  => 'znapzend backup user',
         shell    => $::znapzend::user_shell,
         home     => $::znapzend::user_home,

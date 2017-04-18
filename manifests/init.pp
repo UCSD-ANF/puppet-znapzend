@@ -6,8 +6,7 @@
 # === Parameters
 #
 # [*basedir*]
-#   The base directory where ZnapZend is installed.  Defaults to /usr/local
-#   by the package
+#   The base directory where ZnapZend is installed.  Defaults to /opt/znapzend/bin
 #
 # [*manage_user*]
 #   Defaults to true.  Defines whether a user should be created
@@ -25,14 +24,8 @@
 # [*user_shell*]
 #   The shell defined for $user.  Defaults to 'bash'
 #
-# [*user_uid*]
-#   uid for user.  Defaults to 179
-#
-# [*user_gid*]
-#   gid for group.  Defaults to 179
-#
 # [*group*]
-#   The group assigned to relevenat files and direcories.  Defaults to 
+#   The group assigned to relevant files and directories.  Defaults to 
 #   'znapzend'
 #
 # [*sudo_d_path*]
@@ -96,8 +89,6 @@ class znapzend (
   $user                   = $znapzend::params::user,
   $user_home              = $znapzend::params::user_home,
   $user_shell		  = $znapzend::params::user_shell,
-  $user_uid               = $znapzend::params::user_uid,
-  $user_gid               = $znapzend::params::user_gid,
   $group                  = $znapzend::params::group,
   $sudo_d_path            = $znapzend::params::sudo_d_path,
   $package_ensure         = $znapzend::params::package_ensure,
