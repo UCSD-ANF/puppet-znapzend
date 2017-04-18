@@ -81,7 +81,6 @@ class znapzend::install {
     group    => $::znapzend::group,
     mode     => '0644',
     recurse  => true,
-    require  => User[$::znapzend::user],
   } ->
   # log dir
   file { $::znapzend::service_log_dir:
@@ -90,7 +89,6 @@ class znapzend::install {
     group    => $::znapzend::group,
     mode     => '0755',
     recurse  => true,
-    require  => User[$::znapzend::user],
   } ->
   # config dir
   file { $::znapzend::service_conf_dir:
@@ -99,7 +97,6 @@ class znapzend::install {
     group    => $::znapzend::group,
     mode     => '0755',
     recurse  => true,
-    require  => User[$::znapzend::user],
   } 
   
 
