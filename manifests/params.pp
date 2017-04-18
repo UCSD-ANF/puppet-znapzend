@@ -2,7 +2,7 @@
 #
 class znapzend::params {
 
-  $basedir                = '/usr/local/bin'
+  $basedir                = '/opt/znapzend/bin'
   $manage_user            = true
   $manage_sudo            = true
   $user			  = 'znapzend'

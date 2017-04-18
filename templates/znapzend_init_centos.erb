@@ -4,7 +4,7 @@ After=network.target
 
 [Service]
 Type=forking
-User=znapzend
+User=<%= @user %>
 ExecStart=<%= @basedir %>/znapzend --daemonize <% if @service_features %>--features=<%= @service_features %><% end %> --pidfile=<%= @service_pid_file %> --logto=<%= @service_log_file %>
 Restart=on-failure
 ExecReload=/bin/pkill -HUP -F <%= @service_pid_file %>
