@@ -10,8 +10,13 @@ Manage the [znapzend](http://www.znapzend.org/) package with Puppet
  * mbuffer (optional)
 
 ## Examples
+Run znapzend daemon as the _zfsbackup_ user
 ```
-include znapzend
+class 'znapzend' {
+  user        => 'zfsbackup',
+  group       => 'zfsbackup',
+  manage_user => 'false',
+}
 ```
 Create a backup plan to take local snapshots every _10 minutes_ and keep them for _1 hour_.
 ```
