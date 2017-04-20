@@ -8,6 +8,9 @@
 # [*basedir*]
 #   The base directory where ZnapZend is installed.  Defaults to /opt/znapzend/bin
 #
+# [*mbuffer_path*]
+#   This is the _local_ mbuffer path.  Defaults by OS in params. 
+#
 # [*manage_user*]
 #   Defaults to true.  Defines whether a user should be created
 #
@@ -84,6 +87,7 @@
 #
 class znapzend (
   $basedir		  = $znapzend::params::basedir,
+  $mbuffer_path           = $znapzend::params::mbuffer_path,
   $manage_user            = $znapzend::params::manage_user,
   $manage_sudo            = $znapzend::params::manage_sudo,
   $user                   = $znapzend::params::user,
@@ -105,6 +109,7 @@ class znapzend (
   $service_reload_cmd     = $znapzend::params::service_reload_cmd,
   $service_features       = $znapzend::params::service_features,
   $service_hasstatus      = $znapzend::params::service_hasstatus,
+  $zfs_path               = $znapzend::params::zfs_path,
   $plans		  = {},
 ) inherits znapzend::params {
 

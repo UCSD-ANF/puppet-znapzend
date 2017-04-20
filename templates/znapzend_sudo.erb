@@ -1,2 +1,2 @@
-<%= @user %> ALL=(ALL) NOPASSWD: /sbin/zfs *, /bin/mbuffer *
+<%= @user %> ALL=(ALL) NOPASSWD: <%= @zfs_path %>/zfs *, <%= @mbuffer_path %>/mbuffer *
 Defaults:<%= @user %> !requiretty

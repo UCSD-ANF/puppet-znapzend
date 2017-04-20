@@ -21,6 +21,12 @@ class znapzend::params {
   $service_features       = "sudo"
   $service_hasstatus      = true
 
+  $mbuffer_path = $::osfamily ? {
+    'Solaris'  => '/opt/csw/bin',
+    'FreeBSD'  => '/usr/local/bin',
+    default    => '/usr/bin',
+  }
+
   $service_reload_cmd = $::osfamily ? {
     'RedHat'  => "systemctl reload $service_name",
     'Solaris'  => "svcadm refresh $service_name",
@@ -41,6 +47,11 @@ class znapzend::params {
     'FreeBSD'  => '/usr/local/etc/sudoers.d',
     'Solaris'  => '/etc/opt/csw/sudoers.d',
     default   => '/etc/sudoers.d'
+  }
+
+  $zfs_path = $::osfamily ? {
+    'RedHat'  => '/usr/sbin',
+    default   => '/sbin',
   }
     
 }

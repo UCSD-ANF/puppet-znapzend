@@ -69,7 +69,7 @@ define znapzend::config (
   $config_tsformat        = '%Y-%m-%d-%H%M%S',
   $config_zend_delay      = 0,
 ) {
-  
+
    # create config file to be read by znapzendzetup
    file { "$znapzend::service_conf_dir/$config_file":
       owner     => $::znapzend::user,
