@@ -88,7 +88,6 @@ class znapzend::install {
     owner    => $::znapzend::user,
     group    => $::znapzend::group,
     mode     => '0755',
-    recurse  => true,
   } ->
   # config dir
   file { $::znapzend::service_conf_dir:
@@ -96,7 +95,6 @@ class znapzend::install {
     owner    => $::znapzend::user,
     group    => $::znapzend::group,
     mode     => '0755',
-    recurse  => true,
   } 
   
 

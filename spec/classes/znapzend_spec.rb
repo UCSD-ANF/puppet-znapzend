@@ -146,7 +146,6 @@ describe 'znapzend', :type => :class do
              'owner'     => 'znapzend',
              'group'     => 'znapzend',
              'mode'      => '0755',
-             'recurse'   => true,
            })}
          end
 
@@ -156,7 +155,6 @@ describe 'znapzend', :type => :class do
              'owner'     => 'znapzend',
              'group'     => 'znapzend',
              'mode'      => '0755',
-             'recurse'   => true,
            })}
          end
       end
@@ -182,18 +180,27 @@ describe 'znapzend', :type => :class do
     # test multiple plans can be passed
     describe 'znapzend::plans' do 
       let :params do {
+        :service_conf_dir => '/usr/local/etc/znapzend',
         :plans => {
           'tank_foobar' => {
-            'config_file'     => 'tank_foobar',
+            'config_src'     => 'tank/foobar',
           },
           'backup_tank' => {
-            'config_file'     => 'backup_tank',
+            'config_src'     => 'backup/tank',
           },
         },
       }
       end
-      it { should contain_znapzend__config('tank_foobar') }
-      it { should contain_znapzend__config('backup_tank') }
+      it { should contain_file('/usr/local/etc/znapzend/tank_foobar').with({
+        :owner  => "znapzend",
+        :group  => "znapzend",
+        :notify => "Exec[load_tank_foobar]",
+      })}
+      it { should contain_file('/usr/local/etc/znapzend/backup_tank').with({
+        :owner  => "znapzend",
+        :group  => "znapzend",
+        :notify => "Exec[load_backup_tank]",
+      })}
 
     end # end znapzend::plans
 

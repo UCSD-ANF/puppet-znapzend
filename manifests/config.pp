@@ -7,9 +7,6 @@
 #
 # ===Parameters
 #
-# [*config_file*]
-#   The name of the configuration file used for the znapzendzetup import.  
-#
 # [*config_src*]
 #   ZFS source filesystem for backup plan.
 #
@@ -52,7 +49,6 @@
 #   Specify delay in seconds before sending snapshots to destination.
 #
 define znapzend::config (
-  $config_file,
   $config_src, 
   $config_dst_a           = undef,
   $config_dst_a_plan      = undef,
@@ -71,6 +67,8 @@ define znapzend::config (
 ) {
 
    # create config file to be read by znapzendzetup
+   $config_file = regsubst($config_src,'/','_','G')
+
    file { "$znapzend::service_conf_dir/$config_file":
       owner     => $::znapzend::user,
       group     => $::znapzend::group,
