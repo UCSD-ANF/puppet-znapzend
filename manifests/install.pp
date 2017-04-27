@@ -55,7 +55,7 @@ class znapzend::install {
   if $::znapzend::manage_sudo {
     file { "$::znapzend::sudo_d_path/znapzend":
           owner  => 'root',
-          mode   => '0755',
+          mode   => '0440',
           content => template('znapzend/znapzend_sudo.erb'),
         }
   }
