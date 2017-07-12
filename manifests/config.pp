@@ -60,7 +60,6 @@ define znapzend::config (
   $config_post_znap_cmd   = 'off',
   $config_pre_znap_cmd    = 'off',
   $config_recursive       = 'on',
-  $config_src             = undef,
   $config_src_plan        = undef,
   $config_tsformat        = '%Y-%m-%d-%H%M%S',
   $config_zend_delay      = 0,
