@@ -1,2 +1,2 @@
-<%= @user %> ALL=(ALL) NOPASSWD: <%= @zfs_path %>/zfs *, <%= @mbuffer_path %>/mbuffer *
-Defaults:<%= @user %> !requiretty
+<%= scope.lookupvar('znapzend::user') %> ALL=(ALL) NOPASSWD: <%= scope.lookupvar('znapzend::zfs_path') %>/zfs *, <%= scope.lookupvar('znapzend::mbuffer_path') %>/mbuffer *
+Defaults:<%= scope.lookupvar('znapzend::user') %> !requiretty
