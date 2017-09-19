@@ -4,10 +4,10 @@ After=network.target
 
 [Service]
 Type=forking
-User=<%= @user %>
-ExecStart=<%= @basedir %>/znapzend --daemonize <% if @service_features %>--features=<%= @service_features %><% end %> --pidfile=<%= @service_pid_file %> --logto=<%= @service_log_file %>
+User=<%= scope.lookupvar('znapzend::user') %>
+ExecStart=<%= scope.lookupvar('znapzend::basedir') %>/znapzend --daemonize <% if scope.lookupvar('znapzend::service_features') %>--features=<%= scope.lookupvar('znapzend::service_features') %><% end %> --pidfile=<%= scope.lookupvar('znapzend::service_pid_file') %> --logto=<%= scope.lookupvar('service_log_file') %>
 Restart=on-failure
-ExecReload=/bin/pkill -HUP -F <%= @service_pid_file %>
+ExecReload=/bin/pkill -HUP -F <%= scope.lookupvar('znapzend::service_pid_file') %>
 
 
 [Install]

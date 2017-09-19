@@ -5,15 +5,15 @@
 #[ -z "${SMF_FMRI}" ] && exit $SMF_EXIT_ERR
 
 export PERL5LIB=/opt/csw/share/perl/csw
-ZNAPZEND=<%= @basedir %>/znapzend
-pidfile=<%= @service_pid_file %>
-logfile=<%= @service_log_file %>
-name=<%= @service_name %>
+ZNAPZEND=<%= scope.lookupvar('znapzend::basedir') %>/znapzend
+pidfile=<%= scope.lookupvar('znapzend::service_pid_file') %>
+logfile=<%= scope.lookupvar('znapzend::service_log_file') %>
+name=<%= scope.lookupvar('znapzend::service_name') %>
 
 case "$1" in
 start)
   echo "Starting $name..."
-  su <%= @user %> -c "$ZNAPZEND --daemonize <% if @service_features %>--features=<%= @service_features %><% end %> --pidfile=$pidfile --logto=$logfile"
+  su <%= scope.lookupvar('znapzend::user') %> -c "$ZNAPZEND --daemonize <% if scope.lookupvar('znapzend::service_features') %>--features=<%= scope.lookupvar('znapzend::service_features') %><% end %> --pidfile=$pidfile --logto=$logfile"
   ;;
 
 stop)
