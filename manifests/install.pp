@@ -24,7 +24,7 @@ class znapzend::install {
         file { '/lib/systemd/system/znapzend.service':
           owner     => 'root',
           group     => 'root',
-          mode      => '0755',
+          mode      => '0644',
           content   => template('znapzend/znapzend_init_centos.erb'),
           notify   => Service[$znapzend::service_name],
         }
