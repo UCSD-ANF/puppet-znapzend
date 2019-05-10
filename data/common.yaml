@@ -1,0 +1,28 @@
+---
+znapzend::basedir: '/opt/znapzend/bin'
+znapzend::group: 'znapzend'
+znapzend::manage_init: true
+znapzend::manage_sudo: true
+znapzend::manage_user: true
+znapzend::mbuffer_path: '/usr/bin'
+znapzend::package_ensure: 'present'
+znapzend::package_manage: true
+znapzend::package_name: 'znapzend'
+znapzend::plans: {}
+znapzend::service_conf_dir: '/usr/local/etc/znapzend'
+znapzend::service_enable: true
+znapzend::service_ensure: 'running'
+znapzend::service_features: 'sudo'
+znapzend::service_hasstatus: true
+znapzend::service_log_dir: '/var/log/znapzend'
+znapzend::service_log_file: '/var/log/znapzend/znapzend.log'
+znapzend::service_name: 'znapzend'
+znapzend::service_pid_dir: '/var/run/znapzend'
+znapzend::service_pid_file: '/var/run/znapzend/znapzend.pid'
+znapzend::service_reload_cmd: 'service znapzend reload'
+znapzend::sudo_d_path: '/etc/sudoers.d'
+znapzend::user_home: '/home/znapzend'
+znapzend::user_shell: '/bin/bash'
+znapzend::user: 'znapzend'
+znapzend::zfs_path: '/sbin'
+...

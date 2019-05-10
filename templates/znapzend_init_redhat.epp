@@ -1,0 +1,13 @@
+[Unit]
+Description="ZnapZend - ZFS backup tool"
+After=network.target
+
+[Service]
+Type=forking
+User=<%= $znapzend::user %>
+ExecStart=<%= $znapzend::basedir %>/znapzend --daemonize <% if $znapzend::service_features { %>--features=<%= $znapzend::service_features %><% } %> --pidfile=<%= $znapzend::service_pid_file %> --logto=<%= $znapzend::service_log_file %>
+Restart=on-failure
+ExecReload=/bin/pkill -HUP -F <%= $znapzend::service_pid_file %>
+
+[Install]
+WantedBy=multi-user.target

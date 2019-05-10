@@ -1,0 +1,9 @@
+---
+znapzend::basedir: '/usr/local/bin'
+znapzend::manage_init: false
+znapzend::mbuffer_path: '/usr/local/bin'
+znapzend::package_name: ['bash','znapzend']
+znapzend::service_reload_cmd: "/usr/sbin/service znapzend reload"
+znapzend::sudo_d_path: '/usr/local/etc/sudoers.d'
+znapzend::user_shell: '/usr/local/bin/bash'
+...

@@ -1,0 +1,9 @@
+---
+znapzend::package_name:
+  - perl-Perl-OSType # znapzend dep, but not in the RPM
+  - perl-Sys-Syslog  # znapzend dep, but not in the RPM
+  - perl-Time-Piece  # znapzend dep, but not in the RPM
+  - znapzend
+znapzend::service_reload_cmd: '/bin/systemctl reload znapzend'
+znapzend::zfs_path: '/usr/sbin'
+...

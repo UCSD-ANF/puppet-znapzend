@@ -10,15 +10,15 @@
 
 . /etc/rc.subr
 
-name=<%= scope.lookupvar('znapzend::service_name') %>
+name=<%= $znapzend::service_name %>
 rcvar=znapzend_enable
 desc="ZnapZend - ZFS backup tool"
-pidfile=<%= scope.lookupvar('znapzend::service_pid_file') %>
-logfile=<%= scope.lookupvar('znapzend::service_log_file') %>
+pidfile=<%= $znapzend::service_pid_file %>
+logfile=<%= $znapzend::service_log_file %>
 
 : ${znapzend_enable:=YES}
 
-command="<%= scope.lookupvar('znapzend::basedir') %>/znapzend"
+command="<%= $znapzend::basedir %>/znapzend"
 start_cmd="znapzend_start"
 stop_cmd="znapzend_stop"
 reload_cmd="znapzend_reload"
@@ -26,7 +26,7 @@ status_cmd="znapzend_status"
 
 znapzend_start(){
     echo "Starting ${name}..."
-    su -m <%= scope.lookupvar('znapzend::user') %> -c "${command} --daemonize <% if scope.lookupvar('znapzend::service_features') %>--features=<%= scope.lookupvar('znapzend::service_features') %><% end %> --pidfile=$pidfile --logto=$logfile"
+    su -m <%= $znapzend::user %> -c "${command} --daemonize <% if $znapzend::service_features { %>--features=<%= $znapzend::service_features %><% } %> --pidfile=$pidfile --logto=$logfile"
 }
 
 znapzend_stop(){

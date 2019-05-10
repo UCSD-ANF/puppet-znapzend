@@ -1,0 +1,38 @@
+#!/usr/bin/bash
+
+. /lib/svc/share/smf_include.sh
+
+#[ -z "${SMF_FMRI}" ] && exit $SMF_EXIT_ERR
+
+export PERL5LIB=/opt/csw/share/perl/csw
+ZNAPZEND=<%= $znapzend::basedir %>/znapzend
+pidfile=<%= $znapzend::service_pid_file %>
+logfile=<%= $znapzend::service_log_file %>
+name=<%= $znapzend::service_name %>
+
+case "$1" in
+start)
+  echo "Starting $name..."
+  su <%= $znapzend::user %> -c "$ZNAPZEND --daemonize <% if $znapzend::service_features { %>--features=<%= $znapzend::service_features %><% } %> --pidfile=$pidfile --logto=$logfile"
+  ;;
+
+stop)
+  echo "Stopping $name..."
+  kill `cat ${pidfile}`
+  ;;
+restart)
+  echo "restarting $name..."
+  $0 stop
+  sleep 3
+  $0 start
+  ;;
+reload)
+  echo "reloading $name..."
+  kill -HUP `cat ${pidfile}`
+  ;;
+*)
+  echo "Usage: $0 {start|stop|restart|reload}";
+  exit 1
+  ;;
+esac
+exit 0

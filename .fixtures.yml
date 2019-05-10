@@ -1,6 +1,5 @@
 fixtures:
-    repositories:
-        stdlib: https://github.com/puppetlabs/puppetlabs-stdlib.git
-        staging: https://github.com/nanliu/puppet-staging.git
-    symlinks:
-        znapzend: "#{source_dir}"
+  forge_modules:
+    stdlib: 'puppetlabs-stdlib'
+  symlinks:
+    znapzend: "#{File.dirname(source_dir)}/puppet-znapzend"

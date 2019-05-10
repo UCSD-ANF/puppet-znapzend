@@ -1,0 +1,23 @@
+{
+  "author": "UCSD-ANF",
+  "data_provider": "hiera",
+  "dependencies": [
+    { "name": "puppetlabs-stdlib", "version_requirement": ">= 4.13.1 < 5.0.0" }
+  ],
+  "issues_url": "https://github.com/UCSD-ANF/puppet-znapzend/issues",
+  "license": "BSD-2-Clause",
+  "name": "puppet-znapzend",
+  "operatingsystem_support": [
+    { "operatingsystem": "CentOS", "operatingsystemrelease": [ "7" ] },
+    { "operatingsystem": "RedHat", "operatingsystemrelease": [ "7" ] },
+    { "operatingsystem": "Solaris", "operatingsystemrelease": [ "11" ] },
+    { "operatingsystem": "FreeBSD", "operatingsystemrelease": [ "11" ] }
+  ],
+  "project_page": "https://github.com/UCSD-ANF/puppet-znapzend",
+  "requirements": [
+    { "name": "puppet", "version_requirement": ">= 4.5.0 < 5.0.0" }
+  ],
+  "source": "https://github.com/somts/puppet-pf",
+  "summary": "Puppet module to manage ZnapZend ZFS backup service",
+  "version": "0.0.1"
+}
