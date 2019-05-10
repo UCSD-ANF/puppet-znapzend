@@ -3,7 +3,7 @@
 <service_bundle type='manifest' name='znapzend'>
 
 <service
-        name='system/filesystem/<%= scope.lookupvar('znapzend::service_name') %>'
+        name='system/filesystem/<%= $znapzend::service_name %>'
         type='service'
         version='0.13.0'>
         <create_default_instance enabled='true' />
@@ -21,28 +21,28 @@
         <exec_method
                 type='method'
                 name='start'
-                exec='/lib/svc/method/<%= scope.lookupvar('znapzend::service_name') %> start'
+                exec='/lib/svc/method/<%= $znapzend::service_name %> start'
                 timeout_seconds='0'>
         </exec_method>
 
         <exec_method
                 type='method'
                 name='restart'
-                exec='/lib/svc/method/<%= scope.lookupvar('znapzend::service_name') %> restart'
+                exec='/lib/svc/method/<%= $znapzend::service_name %> restart'
                 timeout_seconds='0'>
         </exec_method>
 
         <exec_method
                 type='method'
                 name='refresh'
-                exec='/lib/svc/method/<%= scope.lookupvar('znapzend::service_name') %> reload'
+                exec='/lib/svc/method/<%= $znapzend::service_name %> reload'
                 timeout_seconds='0'>
         </exec_method>
 
         <exec_method
                 type='method'
                 name='stop'
-                exec='/lib/svc/method/<%= scope.lookupvar('znapzend::service_name') %> stop'
+                exec='/lib/svc/method/<%= $znapzend::service_name %> stop'
                 timeout_seconds='0' >
         </exec_method>
 
@@ -58,7 +58,7 @@
         </property_group>
 
         <property_group name='znapzend' type='application'>
-            <propval name='log' type='astring' value='<%= scope.lookupvar('znapzend::service_log_file') %>' />
+            <propval name='log' type='astring' value='<%= $znapzend::service_log_file %>' />
         </property_group>
 </service>
 </service_bundle>

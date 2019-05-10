@@ -1,0 +1,2 @@
+<%= $znapzend::user %> ALL=(ALL) NOPASSWD: <%= $znapzend::zfs_path %>/zfs *, <%= $znapzend::mbuffer_path %>/mbuffer *
+Defaults:<%= $znapzend::user %> !requiretty

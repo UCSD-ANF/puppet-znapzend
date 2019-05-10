@@ -1,5 +1,5 @@
 # == Class: znapzend::plans
 #
-class znapzend::plans () { include ::znapzend
-   create_resources ('znapzend::config', $::znapzend::plans)
+class znapzend::plans {
+  create_resources('znapzend::plan', $znapzend::plans)
 }

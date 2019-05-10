@@ -9,7 +9,7 @@
 #   The base directory where ZnapZend is installed.  Defaults to /opt/znapzend/bin
 #
 # [*mbuffer_path*]
-#   This is the _local_ mbuffer path.  Defaults by OS in params. 
+#   This is the _local_ mbuffer path.  Defaults by OS in params.
 #
 # [*manage_user*]
 #   Defaults to true.  Defines whether a user should be created
@@ -17,8 +17,12 @@
 # [*manage_sudo*]
 #   Defaults to true.  Defines whether to add sudo entries for zfs
 #
+# [*manage_init*]
+#   Defaults to true, except for FreeBSD.  Defines whether to add manage the
+#   service script for znapzend.
+#
 # [*user*]
-#   The user account the znapzend daemon should run under.  Defaults to 
+#   The user account the znapzend daemon should run under.  Defaults to
 #   'znapzend'
 #
 # [*user_home*]
@@ -28,15 +32,35 @@
 #   The shell defined for $user.  Defaults to 'bash'
 #
 # [*group*]
-#   The group assigned to relevant files and directories.  Defaults to 
+#   The group assigned to relevant files and directories.  Defaults to
 #   'znapzend'
 #
 # [*sudo_d_path*]
 #   Defines path to sudoers.d directory
 #
-# [*package_ensure*] 
+# [*package_ensure*]
 #   Defaults to 'present'. Can be set to a specific version of znapzend,
-#   or to 'latest' to ensure the package is always upgraded.   
+#   or to 'latest' to ensure the package is always upgraded.
+# [*user*]
+#   The user account the znapzend daemon should run under.  Defaults to
+#   'znapzend'
+#
+# [*user_home*]
+#    User home directory
+#
+# [*user_shell*]
+#   The shell defined for $user.  Defaults to 'bash'
+#
+# [*group*]
+#   The group assigned to relevant files and directories.  Defaults to
+#   'znapzend'
+#
+# [*sudo_d_path*]
+#   Defines path to sudoers.d directory
+#
+# [*package_ensure*]
+#   Defaults to 'present'. Can be set to a specific version of znapzend,
+#   or to 'latest' to ensure the package is always upgraded.
 #
 # [*package_manage*]
 #   If false, the package will not be managed by this class. Defaults to true.
@@ -56,7 +80,7 @@
 #   The name of the service(s) to manage. Defaults to 'znapzend'
 #
 # [*service_conf_dir*]
-#   The directory where znapzend configuration files are stored.  Defaults to 
+#   The directory where znapzend configuration files are stored.  Defaults to
 #   '/usr/local/etc/znapzend'.
 #
 # [*service_log_dir*]
@@ -75,7 +99,7 @@
 #   This command reloads the znapzend configuration.
 #
 # [*service_features*]
-#   Comma separated list of "features" that may be passed to the 'znapzend' command. 
+#   Comma separated list of "features" that may be passed to the 'znapzend' command.
 #   Valid features are: oracleMode,recvu,pfexec and sudo (default)
 #
 # [*service_hasstatus*]
@@ -85,48 +109,44 @@
 #   This is a hash array of snapshot plan schedule.  Usually defined in hieradata
 #   More details can be found in the znapzend::plans class
 #
-class znapzend (
-  $basedir		  = $znapzend::params::basedir,
-  $mbuffer_path           = $znapzend::params::mbuffer_path,
-  $manage_user            = $znapzend::params::manage_user,
-  $manage_sudo            = $znapzend::params::manage_sudo,
-  $user                   = $znapzend::params::user,
-  $user_home              = $znapzend::params::user_home,
-  $user_shell		  = $znapzend::params::user_shell,
-  $group                  = $znapzend::params::group,
-  $sudo_d_path            = $znapzend::params::sudo_d_path,
-  $package_ensure         = $znapzend::params::package_ensure,
-  $package_manage         = $znapzend::params::package_manage,
-  $package_name           = $znapzend::params::package_name,
-  $service_enable         = $znapzend::params::service_enable,
-  $service_ensure         = $znapzend::params::service_ensure,
-  $service_name           = $znapzend::params::service_name,
-  $service_conf_dir	  = $znapzend::params::service_conf_dir,
-  $service_log_dir        = $znapzend::params::service_log_dir,
-  $service_log_file       = $znapzend::params::service_log_file,
-  $service_pid_dir        = $znapzend::params::service_pid_dir,
-  $service_pid_file       = $znapzend::params::service_pid_file,
-  $service_reload_cmd     = $znapzend::params::service_reload_cmd,
-  $service_features       = $znapzend::params::service_features,
-  $service_hasstatus      = $znapzend::params::service_hasstatus,
-  $zfs_path               = $znapzend::params::zfs_path,
-  $plans		  = {},
-) inherits znapzend::params {
+class znapzend(
+  Stdlib::Absolutepath $basedir,
+  Stdlib::Absolutepath $mbuffer_path,
+  Boolean $manage_user,
+  Boolean $manage_sudo,
+  Boolean $manage_init,
+  String $user,
+  Stdlib::Absolutepath $user_home,
+  Stdlib::Absolutepath $user_shell,
+  String $group,
+  Stdlib::Absolutepath $sudo_d_path,
+  Enum['absent','latest','present'] $package_ensure,
+  Boolean $package_manage,
+  Variant[Array,String] $package_name,
+  Boolean $service_enable,
+  Enum['running','stopped'] $service_ensure,
+  String $service_name,
+  Stdlib::Absolutepath $service_conf_dir,
+  Stdlib::Absolutepath $service_log_dir,
+  Stdlib::Absolutepath $service_log_file,
+  Stdlib::Absolutepath $service_pid_dir,
+  Stdlib::Absolutepath $service_pid_file,
+  String $service_reload_cmd,
+  String $service_features,
+  Boolean $service_hasstatus,
+  Stdlib::Absolutepath $zfs_path,
+  Hash $plans,
+) {
+  validate_re($facts['os']['family'], '^(RedHat|FreeBSD|Solaris)$',
+    "OS Family ${facts[os][family]} unsupported")
 
-  validate_re($::osfamily, '^(RedHat|FreeBSD|Solaris)$', "OS Family ${::osfamily} unsupported")
-  validate_bool($manage_user)
-  validate_bool($manage_sudo)
-  validate_re($package_ensure, '^(absent|latest|present)$')
-  validate_bool($package_manage)
-  validate_string($package_name)
-  validate_bool($service_enable)
-  validate_bool($service_hasstatus)
-  validate_hash($plans)
+  Class['znapzend::install']
+  -> Class['znapzend::config']
+  ~> Class['znapzend::service']
+  -> Class['znapzend::plans']
 
-
-  anchor {'::znapzend::begin': } ->
-  class {'::znapzend::install': } ->
-  class {'::znapzend::service': } ->
-  class {'::znapzend::plans': } ->
-  anchor {'::znapzend::end': }
+  contain 'znapzend::install'
+  contain 'znapzend::config'
+  contain 'znapzend::service'
+  contain 'znapzend::plans'
 }

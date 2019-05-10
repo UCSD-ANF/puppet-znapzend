@@ -1,0 +1,6 @@
+---
+znapzend::mbuffer_path: '/opt/csw/bin'
+znapzend::package_manage: false
+znapzend::service_reload_cmd: 'svcadm refresh znapzend'
+znapzend::sudo_d_path: '/etc/opt/csw/sudoers.d'
+...
