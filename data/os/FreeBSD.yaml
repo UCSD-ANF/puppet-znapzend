@@ -1,0 +1,5 @@
+---
+# FreeBSD specific parameters for znapzend module
+znapzend::mbuffer_path: '/usr/local/bin'
+znapzend::user_shell: '/usr/local/bin/bash'
+znapzend::sudo_d_path: '/usr/local/etc/sudoers.d'

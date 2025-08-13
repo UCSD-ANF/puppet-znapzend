@@ -1,0 +1,6 @@
+---
+# Solaris specific parameters for znapzend module
+znapzend::mbuffer_path: '/opt/csw/bin'
+znapzend::service_reload_cmd: 'svcadm refresh znapzend'
+znapzend::sudo_d_path: '/etc/opt/csw/sudoers.d'
+znapzend::package_manage: false

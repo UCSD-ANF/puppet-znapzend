@@ -1,0 +1,28 @@
+---
+# Default parameters for znapzend module
+znapzend::basedir: '/opt/znapzend/bin'
+znapzend::manage_user: true
+znapzend::manage_sudo: true
+znapzend::user: 'znapzend'
+znapzend::user_home: '/home/znapzend'
+znapzend::group: 'znapzend'
+znapzend::package_ensure: 'present'
+znapzend::package_name: 'znapzend'
+znapzend::service_enable: true
+znapzend::service_ensure: 'running'
+znapzend::service_name: 'znapzend'
+znapzend::service_conf_dir: '/usr/local/etc/znapzend'
+znapzend::service_log_dir: '/var/log/znapzend'
+znapzend::service_log_file: '/var/log/znapzend/znapzend.log'
+znapzend::service_pid_dir: '/var/run/znapzend'
+znapzend::service_pid_file: '/var/run/znapzend/znapzend.pid'
+znapzend::service_features: 'sudo'
+znapzend::service_hasstatus: true
+
+# Default OS-specific values (overridden by OS-specific files)
+znapzend::mbuffer_path: '/usr/bin'
+znapzend::service_reload_cmd: 'service znapzend reload'
+znapzend::user_shell: '/bin/bash'
+znapzend::package_manage: true
+znapzend::sudo_d_path: '/etc/sudoers.d'
+znapzend::zfs_path: '/sbin'
