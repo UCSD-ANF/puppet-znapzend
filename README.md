@@ -1,9 +1,5 @@
 # puppet-znapzend
 
-[![Puppet Forge](https://img.shields.io/puppetforge/v/igpp/znapzend.svg)](https://forge.puppet.com/igpp/znapzend)
-[![Puppet Forge - downloads](https://img.shields.io/puppetforge/dt/igpp/znapzend.svg)](https://forge.puppet.com/igpp/znapzend)
-[![Puppet Forge - scores](https://img.shields.io/puppetforge/f/igpp/znapzend.svg)](https://forge.puppet.com/igpp/znapzend)
-
 ## Overview
 
 A comprehensive Puppet module for managing [znapzend](http://www.znapzend.org/), a ZFS backup and replication daemon that automates snapshot creation and replication according to configurable retention policies.
@@ -24,20 +20,6 @@ This module provides complete lifecycle management of znapzend across multiple U
 ### Puppet Requirements
 - **Puppet:** 6.21.0 to < 9.0.0
 - **puppetlabs/stdlib:** >= 6.0.0 < 10.0.0
-
-## Installation
-
-Install from Puppet Forge:
-
-```bash
-puppet module install igpp-znapzend
-```
-
-Or add to your Puppetfile:
-
-```puppet
-mod 'igpp-znapzend', '2.0.0'
-```
 
 ## Usage
 
@@ -240,12 +222,11 @@ Version 2.0.0 includes significant modernization with breaking changes:
 
 ## License
 
-Apache License 2.0 - see [LICENSE](LICENSE) file for details.
+BSD 3-Clause License - see [LICENSE](LICENSE) file for details.
 
 ## Support
 
 - **GitHub Issues:** [https://github.com/IGPP/puppet-znapzend/issues](https://github.com/IGPP/puppet-znapzend/issues)
-- **Puppet Forge:** [https://forge.puppet.com/igpp/znapzend](https://forge.puppet.com/igpp/znapzend)
 
 ## Authors
 
