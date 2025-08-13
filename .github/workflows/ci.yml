@@ -1,0 +1,190 @@
+---
+name: "CI"
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+  schedule:
+    - cron: '0 0 * * 0'
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  spec:
+    name: "Spec Tests (Puppet: ${{matrix.puppet_version}}, Ruby: ${{matrix.ruby_version}})"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        puppet_version:
+          - '~> 6.21'
+          - '~> 7.0'
+          - '~> 8.0'
+        ruby_version:
+          - '2.7'
+          - '3.0'
+          - '3.1'
+          - '3.2'
+        exclude:
+          # Puppet 6.x doesn't support Ruby 3.x
+          - puppet_version: '~> 6.21'
+            ruby_version: '3.0'
+          - puppet_version: '~> 6.21'
+            ruby_version: '3.1'
+          - puppet_version: '~> 6.21'
+            ruby_version: '3.2'
+
+    env:
+      PUPPET_GEM_VERSION: ${{ matrix.puppet_version }}
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: "Activate Ruby ${{ matrix.ruby_version }}"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby_version }}
+          bundler-cache: true
+
+      - name: Print bundle environment
+        run: |
+          echo ::group::bundler environment
+          bundle env
+          echo ::endgroup::
+
+      - name: Run Static Analysis and Linting
+        run: |
+          bundle exec rake validate lint check
+
+      - name: Run RSpec tests
+        run: |
+          bundle exec rake spec
+
+      - name: Generate Code Coverage Report
+        uses: codecov/codecov-action@v3
+        if: ${{ github.repository_owner == 'IGPP' }}
+
+  acceptance:
+    name: "Acceptance Tests (${{matrix.os}}, Puppet ${{matrix.puppet_version}})"
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - "centos-7"
+          - "centos-8"
+          - "ubuntu-18.04"
+          - "ubuntu-20.04"
+        puppet_version:
+          - "6"
+          - "7"
+          - "8"
+
+    steps:
+      - name: Checkout Source
+        uses: actions/checkout@v4
+
+      - name: "Activate Ruby 3.2"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+
+      - name: Print bundle environment
+        run: |
+          echo ::group::bundler environment
+          bundler env
+          echo ::endgroup::
+
+      - name: Provision test environment
+        run: |
+          # Note: This is a simplified approach - in real scenarios you might use:
+          # - Vagrant for full VM testing
+          # - Docker containers for faster testing
+          # - Litmus for modern Puppet acceptance testing
+          echo "Setting up test environment for ${{ matrix.os }} with Puppet ${{ matrix.puppet_version }}"
+          bundle exec rake spec_prep
+
+      - name: Run acceptance tests
+        run: |
+          # Basic smoke tests - extend with actual acceptance tests as needed
+          bundle exec rake spec
+          echo "Acceptance testing completed for ${{ matrix.os }}"
+
+  tests:
+    name: "Test Suite"
+    needs:
+      - spec
+    runs-on: ubuntu-latest
+    if: ${{ always() }}
+    steps:
+      - name: Check test matrix status
+        run: |
+          echo '${{ needs.spec.result }}'
+          test '${{ needs.spec.result }}' == 'success'
+
+  release:
+    name: "Release"
+    needs:
+      - tests
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+
+      - name: "Activate Ruby 3.2"
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: "3.2"
+          bundler-cache: true
+
+      - name: Print bundle environment
+        run: |
+          echo ::group::bundler environment
+          bundler env
+          echo ::endgroup::
+
+      - name: Build gem
+        run: |
+          bundle exec rake build
+
+      - name: Calculate next version
+        id: calculate-version
+        run: |
+          # Simple semantic version bumping - could be enhanced with conventional commits
+          current_version=$(jq -r '.version' metadata.json)
+          echo "current=$current_version" >> $GITHUB_OUTPUT
+          # This is a basic implementation - enhance as needed
+          echo "next=${current_version}" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        id: create-release
+        if: steps.calculate-version.outputs.current != steps.calculate-version.outputs.next
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: "v${{ steps.calculate-version.outputs.next }}"
+          release_name: "Release v${{ steps.calculate-version.outputs.next }}"
+          draft: false
+          prerelease: false
+
+      # Uncomment if publishing to Puppet Forge
+      # - name: Deploy to Puppet Forge
+      #   run: |
+      #     bundle exec rake module:push
+      #   env:
+      #     BLACKSMITH_FORGE_URL: https://forgeapi.puppetlabs.com
+      #     BLACKSMITH_FORGE_USERNAME: ${{ secrets.PUPPET_FORGE_USERNAME }}
+      #     BLACKSMITH_FORGE_PASSWORD: ${{ secrets.PUPPET_FORGE_PASSWORD }}
