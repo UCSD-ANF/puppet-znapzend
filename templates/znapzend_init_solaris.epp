@@ -1,0 +1,45 @@
+<%- | Stdlib::Absolutepath $basedir,
+      Stdlib::Absolutepath $service_pid_file,
+      Stdlib::Absolutepath $service_log_file,
+      String[1] $service_name,
+      String[1] $user,
+      Optional[String[1]] $service_features,
+| -%>
+#!/usr/bin/bash
+
+. /lib/svc/share/smf_include.sh
+
+#[ -z "${SMF_FMRI}" ] && exit $SMF_EXIT_ERR
+
+export PERL5LIB=/opt/csw/share/perl/csw
+ZNAPZEND=<%= $basedir %>/znapzend
+pidfile=<%= $service_pid_file %>
+logfile=<%= $service_log_file %>
+name=<%= $service_name %>
+
+case "$1" in
+start)
+  echo "Starting $name..."
+  su <%= $user %> -c "$ZNAPZEND --daemonize <% if $service_features { %>--features=<%= $service_features %><% } %> --pidfile=$pidfile --logto=$logfile"
+  ;;
+
+stop)
+  echo "Stopping $name..."
+  kill `cat ${pidfile}`
+  ;;
+restart)
+  echo "restarting $name..."
+  $0 stop
+  sleep 3
+  $0 start
+  ;;
+reload)
+  echo "reloading $name..."
+  kill -HUP `cat ${pidfile}`
+  ;;
+*)
+  echo "Usage: $0 {start|stop|restart|reload}";
+  exit 1
+  ;;
+esac
+exit 0

@@ -1,0 +1,6 @@
+<%- | String[1] $user,
+      Stdlib::Absolutepath $zfs_path,
+      Stdlib::Absolutepath $mbuffer_path,
+| -%>
+<%= $user %> ALL=(ALL) NOPASSWD: <%= $zfs_path %>/zfs *, <%= $mbuffer_path %>/mbuffer *
+Defaults:<%= $user %> !requiretty

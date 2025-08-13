@@ -1,0 +1,20 @@
+<%- | String[1] $user,
+      Stdlib::Absolutepath $basedir,
+      Optional[String[1]] $service_features,
+      Stdlib::Absolutepath $service_pid_file,
+      Stdlib::Absolutepath $service_log_file,
+| -%>
+[Unit]
+Description="ZnapZend - ZFS backup tool"
+After=network.target
+
+[Service]
+Type=forking
+User=<%= $user %>
+ExecStart=<%= $basedir %>/znapzend --daemonize <% if $service_features { %>--features=<%= $service_features %><% } %> --pidfile=<%= $service_pid_file %> --logto=<%= $service_log_file %>
+Restart=on-failure
+ExecReload=/bin/pkill -HUP -F <%= $service_pid_file %>
+
+
+[Install]
+WantedBy=multi-user.target
