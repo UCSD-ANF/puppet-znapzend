@@ -1,0 +1,72 @@
+# This file can be used to customize the files managed by PDK.
+#
+# See https://github.com/puppetlabs/pdk-templates/blob/main/README.md
+# for more information.
+#
+# See https://github.com/puppetlabs/pdk-templates/blob/main/config_defaults.yml
+# for the default values.
+---
+# Configure CI workflows
+.github/workflows/ci.yml:
+  unmanaged: true
+.github/workflows/release.yml:
+  unmanaged: true
+
+# Configure test settings
+spec/spec_helper.rb:
+  coverage_report: true
+  minimum_code_coverage_percentage: 75
+
+# Configure linting
+.puppet-lint.rc:
+  default_checks:
+    - check: 'class_inherits_from_params_class'
+      enabled: false
+    - check: 'documentation'
+      enabled: false
+    - check: 'autoloader_layout'
+      enabled: true
+
+# Configure rubocop
+.rubocop.yml:
+  inherit_gem:
+    rubocop-performance: .rubocop.yml
+    rubocop-rspec: .rubocop.yml
+  AllCops:
+    TargetRubyVersion: '2.7'
+    Include:
+      - "**/*.rb"
+    Exclude:
+      - bin/*
+      - ".vendor/**/*"
+      - "**/Gemfile"
+      - "**/Rakefile"
+      - pkg/**/*
+      - spec/fixtures/**/*
+      - vendor/**/*
+      - ".bundle/**/*"
+
+# Configure fixtures
+.fixtures.yml:
+  flags:
+    - "--strict_variables=yes"
+
+# Configure GitHub settings
+.github/CODEOWNERS:
+  unmanaged: true
+  
+# Configure PDK settings
+appveyor.yml:
+  unmanaged: true
+.travis.yml:
+  unmanaged: true
+
+# Renovate configuration for dependency updates
+renovate.json:
+  unmanaged: true
+
+# Configure gitignore to preserve custom entries
+.gitignore:
+  extra:
+    - "# Kilo Code MCP configuration"
+    - ".kilocode/mcp.json"

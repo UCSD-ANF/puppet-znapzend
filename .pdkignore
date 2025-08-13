@@ -33,6 +33,19 @@
 .plan_cache.json
 .rerun.json
 bolt-debug.log
-
-# Kilo Code MCP configuration
-.kilocode/mcp.json
+/.fixtures.yml
+/Gemfile
+/.gitattributes
+/.github/
+/.gitignore
+/.pdkignore
+/.puppet-lint.rc
+/Rakefile
+/rakelib/
+/.rspec
+/..yml
+/.yardopts
+/spec/
+/.vscode/
+/.sync.yml
+/.devcontainer/
