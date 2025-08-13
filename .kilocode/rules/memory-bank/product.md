@@ -28,11 +28,11 @@ A comprehensive Puppet module that manages znapzend, a ZFS backup and replicatio
 2. **User Setup**: Creates dedicated `znapzend` user and group for security
 3. **Directory Structure**: Creates log, PID, and configuration directories with proper permissions
 4. **Init Scripts**: Deploys OS-appropriate service startup scripts
-5. **Sudo Configuration**: Sets up minimal ZFS command privileges
+5. **Sudo Configuration**: Sets up minimal ZFS command privileges with type-safe templates
 
 ### Backup Plan Configuration
 1. **Plan Definition**: Uses `znapzend::config` define to create backup plans
-2. **Template Generation**: Creates configuration files from ERB templates
+2. **Template Generation**: Creates configuration files from modern type-safe EPP templates (with ERB fallback)
 3. **Plan Import**: Uses `znapzendzetup import` to load plans into znapzend
 4. **Service Reload**: Automatically reloads daemon when plans change
 
@@ -44,14 +44,15 @@ A comprehensive Puppet module that manages znapzend, a ZFS backup and replicatio
 ## User Experience Goals
 
 ### For System Administrators
-- **Declarative Configuration**: Define backup strategies in Puppet manifests
-- **Minimal Manual Intervention**: Automated setup and maintenance
+- **Declarative Configuration**: Define backup strategies in Puppet manifests with Hiera data separation
+- **Minimal Manual Intervention**: Automated setup and maintenance with modern PDK workflows
 - **Flexibility**: Support for both local and remote backup destinations
-- **Reliability**: Robust error handling and service management
+- **Reliability**: Robust error handling, type safety, and service management
+- **Modern Development**: PDK-based development with automated testing and CI/CD
 
 ### Example Usage Patterns
 ```puppet
-# Basic local backup
+# Basic local backup with Hiera data management
 class 'znapzend' {
   user        => 'zfsbackup',
   group       => 'zfsbackup',
@@ -67,9 +68,17 @@ znapzend::plans { 'tank':
 }
 ```
 
+### Modern Development Experience
+- **Type Safety**: EPP templates provide compile-time parameter validation
+- **Data Management**: Hiera v5 hierarchical data for OS-specific customization
+- **Quality Assurance**: Automated linting, testing, and dependency management
+- **CI/CD Integration**: GitHub Actions for automated releases and Puppet Forge deployment
+
 ## Key Value Propositions
 - **Automation**: Eliminates manual snapshot management tasks
 - **Consistency**: Ensures backup policies are applied uniformly across infrastructure
-- **Security**: Implements principle of least privilege for backup operations  
+- **Security**: Implements principle of least privilege with type-safe sudo configuration
 - **Portability**: Works across major Unix platforms with ZFS support
 - **Integration**: Fits naturally into existing Puppet infrastructure workflows
+- **Maintainability**: Modern Hiera data separation and PDK-based development practices
+- **Reliability**: Enhanced error detection through EPP template type checking and comprehensive testing
