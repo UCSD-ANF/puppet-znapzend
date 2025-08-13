@@ -9,7 +9,7 @@
 #   The base directory where ZnapZend is installed.  Defaults to /opt/znapzend/bin
 #
 # [*mbuffer_path*]
-#   This is the _local_ mbuffer path.  Defaults by OS in params. 
+#   This is the _local_ mbuffer path.  Defaults by OS in module hiera data.
 #
 # [*manage_user*]
 #   Defaults to true.  Defines whether a user should be created
@@ -18,7 +18,7 @@
 #   Defaults to true.  Defines whether to add sudo entries for zfs
 #
 # [*user*]
-#   The user account the znapzend daemon should run under.  Defaults to 
+#   The user account the znapzend daemon should run under.  Defaults to
 #   'znapzend'
 #
 # [*user_home*]
@@ -28,7 +28,7 @@
 #   The shell defined for $user.  Defaults to 'bash'
 #
 # [*group*]
-#   The group assigned to relevant files and directories.  Defaults to 
+#   The group assigned to relevant files and directories.  Defaults to
 #   'znapzend'
 #
 # [*sudo_d_path*]
@@ -85,48 +85,47 @@
 #   This is a hash array of snapshot plan schedule.  Usually defined in hieradata
 #   More details can be found in the znapzend::plans class
 #
+# [*zfs_path*]
+#   Path to the ZFS binary.  Defaults are OS-specific.
+#
 class znapzend (
-  $basedir		  = $znapzend::params::basedir,
-  $mbuffer_path           = $znapzend::params::mbuffer_path,
-  $manage_user            = $znapzend::params::manage_user,
-  $manage_sudo            = $znapzend::params::manage_sudo,
-  $user                   = $znapzend::params::user,
-  $user_home              = $znapzend::params::user_home,
-  $user_shell		  = $znapzend::params::user_shell,
-  $group                  = $znapzend::params::group,
-  $sudo_d_path            = $znapzend::params::sudo_d_path,
-  $package_ensure         = $znapzend::params::package_ensure,
-  $package_manage         = $znapzend::params::package_manage,
-  $package_name           = $znapzend::params::package_name,
-  $service_enable         = $znapzend::params::service_enable,
-  $service_ensure         = $znapzend::params::service_ensure,
-  $service_name           = $znapzend::params::service_name,
-  $service_conf_dir	  = $znapzend::params::service_conf_dir,
-  $service_log_dir        = $znapzend::params::service_log_dir,
-  $service_log_file       = $znapzend::params::service_log_file,
-  $service_pid_dir        = $znapzend::params::service_pid_dir,
-  $service_pid_file       = $znapzend::params::service_pid_file,
-  $service_reload_cmd     = $znapzend::params::service_reload_cmd,
-  $service_features       = $znapzend::params::service_features,
-  $service_hasstatus      = $znapzend::params::service_hasstatus,
-  $zfs_path               = $znapzend::params::zfs_path,
-  $plans		  = {},
-) inherits znapzend::params {
+  Stdlib::Absolutepath $basedir,
+  Stdlib::Absolutepath $mbuffer_path,
+  Boolean $manage_user,
+  Boolean $manage_sudo,
+  String[1] $user,
+  Stdlib::Absolutepath $user_home,
+  Stdlib::Absolutepath $user_shell,
+  String[1] $group,
+  Stdlib::Absolutepath $sudo_d_path,
+  Enum['absent','latest','present'] $package_ensure,
+  Boolean $package_manage,
+  String[1] $package_name,
+  Boolean $service_enable,
+  Stdlib::Ensure::Service $service_ensure,
+  String[1] $service_name,
+  Stdlib::Absolutepath $service_conf_dir,
+  Stdlib::Absolutepath $service_log_dir,
+  Stdlib::Absolutepath $service_log_file,
+  Stdlib::Absolutepath $service_pid_dir,
+  Stdlib::Absolutepath $service_pid_file,
+  String[1] $service_reload_cmd,
+  String[1] $service_features,
+  Boolean $service_hasstatus,
+  Stdlib::Absolutepath $zfs_path,
+  Hash $plans = {},
+) {
+  # Validate OS family compatibility
+  unless $facts['os']['family'] in ['RedHat', 'FreeBSD', 'Solaris'] {
+    fail("OS Family ${facts['os']['family']} unsupported")
+  }
 
-  validate_re($::osfamily, '^(RedHat|FreeBSD|Solaris)$', "OS Family ${::osfamily} unsupported")
-  validate_bool($manage_user)
-  validate_bool($manage_sudo)
-  validate_re($package_ensure, '^(absent|latest|present)$')
-  validate_bool($package_manage)
-  validate_string($package_name)
-  validate_bool($service_enable)
-  validate_bool($service_hasstatus)
-  validate_hash($plans)
+  # Class containment and ordering
+  contain znapzend::install
+  contain znapzend::service
+  contain znapzend::plans
 
-
-  anchor {'::znapzend::begin': } ->
-  class {'::znapzend::install': } ->
-  class {'::znapzend::service': } ->
-  class {'::znapzend::plans': } ->
-  anchor {'::znapzend::end': }
+  Class['znapzend::install']
+  -> Class['znapzend::service']
+  -> Class['znapzend::plans']
 }
