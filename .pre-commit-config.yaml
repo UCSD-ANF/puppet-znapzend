@@ -1,0 +1,136 @@
+---
+# Pre-commit hooks for puppet-znapzend PDK-based Puppet module
+# Integrates with existing toolchain: PDK, RuboCop (.rubocop.yml), puppet-lint (.puppet-lint.rc)
+# Provides fast local validation without duplicating comprehensive CI/CD pipeline
+
+repos:
+  # Puppet Development Kit (PDK) hooks for syntax and basic validation
+  - repo: local
+    hooks:
+      # Puppet syntax validation using PDK
+      - id: puppet-syntax
+        name: Puppet syntax validation
+        entry: pdk validate syntax
+        language: system
+        files: \.(pp|epp)$
+        pass_filenames: false
+        stages: [pre-commit]
+
+      # Puppet-lint checks using existing .puppet-lint.rc configuration
+      - id: puppet-lint
+        name: Puppet-lint validation
+        entry: pdk validate puppet-lint
+        language: system
+        files: \.pp$
+        pass_filenames: false
+        stages: [pre-commit]
+
+      # Metadata validation using PDK
+      - id: metadata-validation
+        name: Metadata validation
+        entry: pdk validate metadata
+        language: system
+        files: metadata\.json$
+        pass_filenames: false
+        stages: [pre-commit]
+
+  # RuboCop for Ruby code using PDK-managed bundled version (compatible with Ruby 2.6)
+  - repo: local
+    hooks:
+      - id: rubocop
+        name: RuboCop Ruby linting
+        entry: pdk bundle exec rubocop
+        language: system
+        args: [--config, .rubocop.yml, --format, simple]
+        files: \.(rb|rake)$|Rakefile|Gemfile
+        stages: [pre-commit]
+        pass_filenames: false
+
+  # YAML validation and formatting
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.37.1
+    hooks:
+      - id: yamllint
+        name: YAML validation
+        args: [--config-data, '{extends: default, rules: {line-length: {max: 120}, indentation: {spaces: 2}}}']
+        files: \.(yaml|yml)$
+        stages: [pre-commit]
+
+  # JSON validation (for metadata.json and other JSON files)
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: check-json
+        name: JSON validation
+        files: \.json$
+        stages: [pre-commit]
+
+  # Template validation for EPP files (Puppet EPP syntax)
+  - repo: local
+    hooks:
+      - id: epp-validation
+        name: EPP template validation
+        entry: bash -c 'for file in "$@"; do puppet epp validate "$file"; done'
+        language: system
+        files: \.epp$
+        stages: [pre-commit]
+
+  # Basic security and formatting checks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      # Prevent committing secrets
+      - id: detect-private-key
+        name: Detect private keys
+        stages: [pre-commit]
+
+      # Check for merge conflict markers
+      - id: check-merge-conflict
+        name: Check for merge conflicts
+        stages: [pre-commit]
+
+      # Ensure files end with newline
+      - id: end-of-file-fixer
+        name: Fix end of files
+        exclude: \.patch$
+        stages: [pre-commit]
+
+      # Remove trailing whitespace
+      - id: trailing-whitespace
+        name: Trim trailing whitespace
+        args: [--markdown-linebreak-ext=md]
+        stages: [pre-commit]
+
+      # Check file size (prevent accidentally committing large files)
+      - id: check-added-large-files
+        name: Check for large files
+        args: [--maxkb=500]
+        stages: [pre-commit]
+
+      # Ensure executable files have shebangs
+      - id: check-executables-have-shebangs
+        name: Check executable shebangs
+        stages: [pre-commit]
+
+  # Additional Puppet-specific security checks
+  - repo: https://github.com/bridgecrewio/checkov
+    rev: 3.2.471
+    hooks:
+      - id: checkov
+        name: Checkov security scanning
+        args: [--framework, puppet, --quiet, --compact]
+        files: \.(pp|yaml|yml|json)$
+        stages: [manual]  # Run manually for security audits
+
+# Configuration for ci (continuous integration) stage
+ci:
+  autofix_commit_msg: |
+    [pre-commit.ci] auto fixes from pre-commit.com hooks
+
+    for more information, see https://pre-commit.ci
+  autofix_prs: true
+  autoupdate_branch: ''
+  autoupdate_commit_msg: '[pre-commit.ci] pre-commit autoupdate'
+  autoupdate_schedule: weekly
+  skip: [checkov]  # Skip heavy security scanning in CI
+  submodules: false

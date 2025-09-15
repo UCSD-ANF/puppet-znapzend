@@ -38,12 +38,13 @@ jobs:
           # Extract version from tag
           VERSION=${GITHUB_REF#refs/tags/v}
           echo "version=${VERSION}" >> $GITHUB_OUTPUT
-          
+
           # Generate changelog content (basic implementation)
           echo "## Release ${VERSION}" > RELEASE_NOTES.md
           echo "" >> RELEASE_NOTES.md
           echo "### Changes" >> RELEASE_NOTES.md
-          git log --pretty=format:"- %s" $(git describe --tags --abbrev=0 HEAD^)..HEAD >> RELEASE_NOTES.md || echo "- Initial release" >> RELEASE_NOTES.md
+          git log --pretty=format:"- %s" $(git describe --tags --abbrev=0 HEAD^)..HEAD >> \
+            RELEASE_NOTES.md || echo "- Initial release" >> RELEASE_NOTES.md
 
       - name: Create GitHub Release
         uses: actions/create-release@v1
