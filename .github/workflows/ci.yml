@@ -22,7 +22,6 @@ jobs:
       fail-fast: false
       matrix:
         puppet_version:
-          - '~> 6.21'
           - '~> 7.0'
           - '~> 8.0'
         ruby_version:
@@ -30,14 +29,6 @@ jobs:
           - '3.0'
           - '3.1'
           - '3.2'
-        exclude:
-          # Puppet 6.x doesn't support Ruby 3.x
-          - puppet_version: '~> 6.21'
-            ruby_version: '3.0'
-          - puppet_version: '~> 6.21'
-            ruby_version: '3.1'
-          - puppet_version: '~> 6.21'
-            ruby_version: '3.2'
 
     env:
       PUPPET_GEM_VERSION: ${{ matrix.puppet_version }}
@@ -83,7 +74,6 @@ jobs:
           - "ubuntu-18.04"
           - "ubuntu-20.04"
         puppet_version:
-          - "6"
           - "7"
           - "8"
 
