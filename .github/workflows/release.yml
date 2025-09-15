@@ -30,7 +30,8 @@ jobs:
 
       - name: Build and validate module
         run: |
-          bundle exec rake build validate lint check spec
+          bundle exec rake validate lint check spec
+          bundle exec rake build
 
       - name: Generate Changelog
         id: changelog
@@ -47,25 +48,19 @@ jobs:
             RELEASE_NOTES.md || echo "- Initial release" >> RELEASE_NOTES.md
 
       - name: Create GitHub Release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        id: create_release
+        uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ github.ref_name }}
-          release_name: "Release ${{ steps.changelog.outputs.version }}"
+          name: "Release ${{ steps.changelog.outputs.version }}"
           body_path: RELEASE_NOTES.md
           draft: false
           prerelease: false
-
-      - name: Upload Release Asset
-        uses: actions/upload-release-asset@v1
+          files: ./pkg/igpp-znapzend-${{ steps.changelog.outputs.version }}.tar.gz
+          fail_on_unmatched_files: true
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./pkg/igpp-znapzend-${{ steps.changelog.outputs.version }}.tar.gz
-          asset_name: igpp-znapzend-${{ steps.changelog.outputs.version }}.tar.gz
-          asset_content_type: application/gzip
 
   forge:
     name: "Deploy to Puppet Forge"
@@ -80,6 +75,9 @@ jobs:
         with:
           ruby-version: "3.2"
           bundler-cache: true
+
+      - name: Build module for Forge
+        run: bundle exec rake build
 
       - name: Deploy to Puppet Forge
         run: |
